@@ -1,8 +1,8 @@
-const { expect, use } = require("chai");
-const { ethers } = require("hardhat");
-const helpers = require("@nomicfoundation/hardhat-network-helpers");
+const { expect, use } = require('chai');
+const { ethers } = require('hardhat');
+const helpers = require('@nomicfoundation/hardhat-network-helpers');
 
-use(require("chai-as-promised"));
+use(require('chai-as-promised'));
 
 const TARGET_GAS_PRICE = 6_029_700;
 
@@ -33,15 +33,17 @@ const logGasUsage = (currentGasUsage) => {
 //   the constructor. We've set this up for you.
 // - You may not modify the victim contract
 
-describe("Mint150", async function () {
+describe('Mint150', async function () {
     let attacker;
     let victimToken;
 
     beforeEach(async () => {
-        await ethers.provider.send("hardhat_reset");
+        await ethers.provider.send('hardhat_reset');
 
         [owner, attacker] = await ethers.getSigners();
-        const VictimToken = await ethers.getContractFactory("contracts/contracts_optimized/OptimizedMint150.sol:NotRareToken");
+        const VictimToken = await ethers.getContractFactory(
+            'contracts/contracts_optimized/OptimizedMint150.sol:NotRareToken'
+        );
         victimToken = await VictimToken.deploy();
         await victimToken.deployed();
 
@@ -54,10 +56,10 @@ describe("Mint150", async function () {
         }
     });
 
-    describe("Gas target", function () {
-        it("The functions MUST meet the expected gas efficiency", async function () {
+    describe('Gas target', function () {
+        it('The functions MUST meet the expected gas efficiency', async function () {
             const attackerContract = await ethers.getContractFactory(
-                "OptimizedAttacker"
+                'OptimizedAttacker'
             );
 
             const txn = await attackerContract
@@ -75,10 +77,10 @@ describe("Mint150", async function () {
         });
     });
 
-    describe("Business logic", function () {
-        it("The attacker MUST mint 150 NFTs in one transaction", async function () {
+    describe('Business logic', function () {
+        it('The attacker MUST mint 150 NFTs in one transaction', async function () {
             const attackerContract = await ethers.getContractFactory(
-                "OptimizedAttacker"
+                'OptimizedAttacker'
             );
 
             const txn = await attackerContract
@@ -87,11 +89,11 @@ describe("Mint150", async function () {
         });
     });
 
-    afterEach("hack must succeed", async function () {
+    afterEach('hack must succeed', async function () {
         expect(await victimToken.balanceOf(attacker.address)).to.be.equal(150);
         expect(
             await ethers.provider.getTransactionCount(attacker.address)
-        ).to.equal(1, "only one transaction allowed");
+        ).to.equal(1, 'only one transaction allowed');
         expect(victimToken.data);
     });
 });
